@@ -2,6 +2,11 @@
 \ProvidesClass{RapportInfo}[1.0]
 \LoadClass[11pt,a4paper]{article}
 
+%%%%%%%%%%%%% TODO %%%%%%%%%%%%%
+
+% Ajouter une fonction pour retirer facilement le \matiere, \lieu ...
+% Ajouter un bloc "Rapport de bug
+
 %%%%%%%%%%%%% Extensions %%%%%%%%%%%%%
 \RequirePackage{fancyhdr}
 \RequirePackage{tabto}
