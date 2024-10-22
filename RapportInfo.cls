@@ -14,7 +14,7 @@
 \RequirePackage{xcolor}
 \RequirePackage[hidelinks]{hyperref}
 \RequirePackage{bbm}
-%\RequirePackage{totcount}
+\RequirePackage{float}
 
 %%%%%%%%%%%%% Paramètres %%%%%%%%%%%%%
 \setlength{\headheight}{15pt}
@@ -115,6 +115,10 @@
 %\parx
 % Fait un alinéa forcé dans n'importe quel partie du document
 \newcommand{\parx}{\hspace{\parindent}}
+
+%\hrefx
+% Ajoute une hyperréference en bleu
+\newcommand{\hrefx}[2]{\href{#1}{\textcolor{blue}{#2}}}
 
 %\ra
 % Affiche une flèche vers la droite
