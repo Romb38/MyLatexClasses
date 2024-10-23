@@ -160,6 +160,16 @@
     \Large\textbf{\textcolor{red}{-- #1 -- }}\normalsize
 }
 
+%\labelx
+% Créer un label à la ligne exact ou il est
+\newcommand{\labelx}[1]{
+    \hypertarget{#1}{}
+}
+
+\newcommand{\refx}[2]{
+    \hyperlink{#1}{#2}
+}
+
 %\begin{code}[<language>]
 % Créer un bloc de code qui colore automatiquement avec le language passé en paramètre
 \lstnewenvironment{code}[1][python]
