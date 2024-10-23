@@ -56,6 +56,8 @@
 %%%%%%%%%%%%% Variables personnelles %%%%%%%%%%%%%
 \newcommand*{\matiere}[1]{\def\@matiere{#1}}
 \newcommand*{\lieu}[1]{\def\@lieu{#1}}
+\newcommand*{\auteur}[1]{\author{#1}}
+\newcommand*{\titre}[1]{\title{#1}}
 \newcommand*{\WIP}[1]{\def\@WIP{#1}}
 \newcommand*{\NOTSOLVED}[1]{\def\@notsolv{#1}}
 \newcommand*{\EOF}{\texttt{EOF}}
@@ -75,7 +77,7 @@
 \def\fps@figure{!h}
 
 %%%%%%%%%%%%% Valeurs par défaut %%%%%%%%%%%%%
-\title{Mon titre}
+\title{Titre}
 \author{Auteurs}
 \matiere{Matière}
 \lieu{Lieu}
@@ -332,7 +334,7 @@
     %%%%%%%%%%%%% Crée la variable WIP %%%%%%%%%%%%%
     \makeatletter
     \renewcommand{\WIP}{
-        \textbf{\textcolor{red}{\@WIP}}\\
+        \Large\textbf{\textcolor{red}{\@WIP}}\normalsize\\
     }
     \makeatother
 
