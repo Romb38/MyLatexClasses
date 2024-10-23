@@ -125,7 +125,7 @@
 \newcommand{\ra}{$\rightarrow$~}
 
 %\la
-% Affiche une flèche vers la droite
+% Affiche une flèche vers la gauche
 \newcommand{\la}{$\leftarrow$~}
 
 %\nlx
