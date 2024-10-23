@@ -4,7 +4,7 @@
 
 %%%%%%%%%%%%% TODO %%%%%%%%%%%%%
 
-% Ajouter une fonction pour retirer facilement le \matiere, \lieu ...
+% Rendre les paramètres de matière et autre optionnels
 % Ajouter un bloc "Rapport de bug
 
 %%%%%%%%%%%%% Extensions %%%%%%%%%%%%%
@@ -20,12 +20,31 @@
 \RequirePackage[hidelinks]{hyperref}
 \RequirePackage{bbm}
 \RequirePackage{float}
+\RequirePackage{etoolbox}
 
 %%%%%%%%%%%%% Paramètres %%%%%%%%%%%%%
 \setlength{\headheight}{15pt}
 \setlength\bibitemsep{2\itemsep}
 \pagestyle{fancy}
 
+%%%%%%%%%%%%% Macro de définition des commandes d'environnement %%%%%%%%%%%%%
+
+\ExplSyntaxOn
+\NewDocumentCommand{\newenvcommand}{ m m }
+  {
+   \cs_if_exist:cF { g_envc_#1_list_tl } { \tl_new:c { g_envc_#1_list_tl } }
+   \tl_gput_right:cn { g_envc_#1_list_tl } { #2 }
+   \exp_after:wN \newcommand \cs:w envc_#1_\cs_to_str:N #2 \cs_end:
+  }
+\NewDocumentCommand{\checkenvcommands}{ }
+  {
+   \cs_if_exist:cT { g_envc_\use:c {@currenvir} _list_tl }
+     {
+      \tl_map_inline:cn { g_envc_\use:c {@currenvir} _list_tl }
+        { \cs_set_eq:Nc ##1 { envc_\use:c {@currenvir} _\cs_to_str:N ##1 } }
+     }
+  }
+\ExplSyntaxOff
 
 %%%%%%%%%%%%% Couleurs blocs de code %%%%%%%%%%%%%
 \definecolor{colorBack}{rgb}{0.95,0.95,0.92}
@@ -40,10 +59,8 @@
 \newcommand*{\EOF}{\texttt{EOF}}
 \newcommand*{\titreSommaire}[1]{\def\@titreSommaire{#1}}
 \newcommand*{\langue}[1]{\def\@langue{#1}}
+\newif\ifisbigdocument
 
-%%%%%%%%%%%%% Compteurs personnels %%%%%%%%%%%%%
-%\newtotcounter{wipnb}
-%\regtotcounter{wipnb}
 
 %%%%%%%%%%%%% Gestion des graphiques %%%%%%%%%%%%%
 \graphicspath{{img}}
@@ -72,11 +89,70 @@
 \rhead{\@date}
 \rfoot{\@author}
 
-%%%%%%%%%%%%% Commandes personnelles %%%%%%%%%%%%%
-% \funcr - Affiche un bloc fonction
-% \parx - Fait un alinéa
-% \makeheader - Affiche l'entête
+%%%%%%%%%%%%% Block funcr %%%%%%%%%%%%%
 
+% Créé un block de description de fonction
+
+% Ce block définit les commande suivantes :
+%\signature{#1} Donne la signature de la fonction
+%\desc{#1} Ajoute de la description à la fonction
+%\param{#1} Ajoute un paramètre à la fonction
+%\return{#1} Ajoute une valeur de retour à la fonction
+
+%%% Commande d'environnement %%%
+% Stocke la signature spécifiée
+\newenvcommand{funcr}{\signature}[1]{\def\signaturetext{#1}} 
+
+% Stocke la description spécifiée
+\newenvcommand{funcr}{\desc}[1]{\def\desctext{#1}} 
+
+% Commandes pour ajouter des paramètres et retours
+\newenvcommand{funcr}{\param}[1]{\gappto\paramlist{\item #1}}
+
+\newenvcommand{funcr}{\return}[1]{\gappto\returnlist{\item #1}}
+
+% Définition de l'environnement "funcrblock"
+\newenvironment{funcr}
+{   
+    \checkenvcommands
+    \begin{tcolorbox}
+        % Initialisation des variables locales
+        \def\signaturetext{} % Initialise la signature
+        \def\desctext{} % Initialise la description
+        \def\paramlist{} % Initialise la liste des paramètres
+        \def\returnlist{} % Initialise la liste des retours
+}
+{
+    % Affichage de la signature si définie
+    \ifstrempty{\signaturetext}{}{% Si \signaturetext n'est pas vide, l'afficher
+        \subsection*{\hspace{0.5cm} \signaturetext}
+    }
+    
+    % Affichage de la description si définie
+    \ifstrempty{\desctext}{}{% Si \desctext n'est pas vide, l'afficher
+        \desctext \par\medskip % Ajoute un saut de ligne
+    }
+    
+    % Affichage des paramètres si définis
+    \ifstrempty{\paramlist}{}{% Si \paramlist n'est pas vide, l'afficher
+        \textit{Paramètres :}
+        \begin{itemize}
+            \paramlist
+        \end{itemize}
+    }
+    
+    % Affichage du retour si défini
+    \ifstrempty{\returnlist}{}{% Si \returnlist n'est pas vide, l'afficher
+        \textit{Retour :}
+        \begin{itemize}
+            \returnlist
+        \end{itemize}
+    }
+    
+    \end{tcolorbox}
+}
+
+%%%%%%%%%%%%% Commandes personnelles %%%%%%%%%%%%%
 
 %\makeheader
 % Affiche le bloc d'entête avec les informations suivantes : Titre, matière, auteurs
@@ -87,34 +163,6 @@
     \fbox{\parbox{15.7cm}{\centering\textbf{\Large{\@title}} \\ \vspace{0.17cm} \@matiere \\ \vspace{0.13cm} \@author }} \vspace{0.5cm}
     \medskip
 
-}
-
-%\funcr{#1}{#2}{#3}{#4}
-% Réalise l'affichage d'un bloc de fonction avec
-%   #1 : La signature de la fonction. Ex : int Myfunc(arg1,arg2)
-%   #2 : La description de la fonction
-%   #3 : Les paramètres de la fonction sous forme d'une liste à item. Ex : \item arg1 : Mon premier argument \item arg2 : Mon deuxième argument
-%   #4 : La valeur de retour de la fonction.
-
-\newcommand\funcr[4]{
-    \begin{tcolorbox}
-        \subsection*{\hspace{0.5cm} #1}
-        #2
-        
-        \ifthenelse{\equal{\detokenize{#3}}{}}{}{
-            \textit{Paramètres :}
-            \begin{itemize}
-                #3
-            \end{itemize}
-        }
-        
-        \ifthenelse{\equal{#4}{}}{}{
-            \textit{Retour :}
-            \begin{itemize}
-                \item #4
-            \end{itemize}
-        }
-    \end{tcolorbox}
 }
 
 %\parx
@@ -141,6 +189,8 @@
 % Affiche une référence vers #1 avec le nom complet (nom, numéro et label de l'objet)
 \newcommand*\fullref[1]{\hyperref[{#1}]{\autoref*{#1}, \nameref*{#1}}} % One single link
 
+%\appendix
+% Créer un paragraphe annexe pour le document
 \let\oldappendix\appendix
 \renewcommand\appendix{
     \pagebreak
@@ -150,6 +200,9 @@
     \addtocontents{toc}{\setcounter{tocdepth}{0}}
     \renewcommand*{\thesection}{Annexe~\Alph{section}}
 }
+
+% Indique que le document est long
+\newcommand{\bigdocument}{\isbigdocumenttrue}
 
 %\begin{code}[<language>]
 % Créer un bloc de code qui colore automatiquement avec le language passé en paramètre
@@ -205,5 +258,6 @@
     }
 
     %%%%%%%%%%%%% Document Imposant %%%%%%%%%%%%%
-    \newpage
+    \ifisbigdocument{}\newpage\else\fi
 }
+
