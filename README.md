@@ -63,6 +63,7 @@ Il définit les fonctions suivantes
 - \\contextx[1] Commence le block "Contexte". Il est possible de changer le nom du paragraphe avec le paramètre optionnel.
 - \\desiredx[1] Commence le block "Comportement souhaité". Il est possible de changer le nom du paragraphe avec le paramètre optionnel.
 - \\bugx[1] Commence le block "Bug". Il est possible de changer le nom du paragraphe avec le paramètre optionnel
+- \\researchx[1] Commence le block "Research". Il est possible de changer le nom du paragraphe avec le paramètre optionnel
 - \\solutionx[1] Commence le block "Solution". Si ce bloc n'est pas la alors un placeholder "-- NOT SOLVED--" est mis. Il est possible de changer le nom du paragraphe avec le paramètre optionnel
 
 - \\NOTSOLVED{1} Change le texte du placeholder quand la solution au bug n'est pas proposée
