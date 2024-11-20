@@ -21,6 +21,8 @@
 \RequirePackage{etoolbox}
 \RequirePackage{xparse}
 \RequirePackage{ifthen}
+\RequirePackage{caption}
+
 
 %%%%%%%%%%%%% Paramètres %%%%%%%%%%%%%
 \setlength{\headheight}{15pt}
@@ -161,6 +163,16 @@
 \newcommand{\bigmsgx}[1]{
     \Large\textbf{\textcolor{red}{-- #1 -- }}\normalsize
 }
+
+%\tocorrectx
+% Indique que du texte est à corriger
+\newcommand{\tocorrectx}[1]{
+    \textcolor{red}{[X] #1 [X]}
+}
+
+%\mcx
+% Créer un mini-block de code sur une ligne (comme `code` en markdown)
+\newtcbox{\mcx}{on line, colback=gray!30, colframe=gray!80, boxrule=0.5pt, arc=3pt, boxsep=0pt, left=2pt, right=2pt, top=2pt, bottom=2pt}
 
 %\labelx
 % Créer un label à la ligne exact ou il est
